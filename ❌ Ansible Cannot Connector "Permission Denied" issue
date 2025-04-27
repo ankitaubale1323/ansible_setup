@@ -1,0 +1,150 @@
+🌟 Project Setup and Troubleshooting Guide 🌟
+ --❌ Ansible Cannot Connect - "Connection Timeout" or "Permission Denied"--
+1. 🚀 Form Setup
+If you're working with AWS servers and using Ansible to automate management, follow these steps to set up your SSH Key and troubleshoot any issues.
+
+1.1. ⚙️ Setup Instructions
+Step 1: Install Required Tools
+Make sure your local machine has:
+
+AWS CLI — For interacting with AWS services
+
+Ansible — For server automation
+
+OpenSSH — For secure SSH connections
+
+Install Ansible using:
+
+bash
+Copy
+Edit
+sudo apt update
+sudo apt install ansible
+Step 2: Ensure SSH Key is Accessible
+
+Place your SSH private key (test1.pem) in an accessible folder, like:
+
+bash
+Copy
+Edit
+/home/your-username/Downloads/test1.pem
+Set the correct permissions:
+
+bash
+Copy
+Edit
+chmod 400 ~/Downloads/test1.pem
+Step 3: Setup Inventory File for Ansible
+
+Create an inventory file (example location: /etc/ansible/hosts) and configure it like:
+
+ini
+Copy
+Edit
+[servers]
+serverA ansible_host=<ServerA_Public_IP> ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/test1.pem
+serverB ansible_host=<ServerB_Private_IP> ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/test1.pem
+
+1.2. 🔑 Connect to EC2 Instance Using SSH
+Use the following command to connect:
+
+bash
+Copy
+Edit
+ssh -i ~/Downloads/test1.pem ubuntu@<ServerA_Public_IP>
+Note: Replace <ServerA_Public_IP> with your EC2 instance's actual public IP address.
+
+2. 🛠️ Troubleshooting Guide
+2.1. ❗ scp Error: "No such file or directory"
+Cause:
+
+Wrong Machine: Running scp from the server instead of your local machine.
+
+Incorrect File Path: Path to source/destination file is wrong.
+
+Incorrect command (from server):
+
+bash
+Copy
+Edit
+ubuntu@172.31.88.189:~$ scp -i ~/Downloads/test1.pem ~/Downloads/test1.pem ubuntu@<ServerA_Public_IP>:/home/ubuntu/
+Correct command (from local machine):
+
+bash
+Copy
+Edit
+scp -i ~/Downloads/test1.pem ~/Downloads/test1.pem ubuntu@<ServerA_Public_IP>:/home/ubuntu/
+Resolution:
+
+Run scp from your local machine only.
+
+Ensure correct file path (like ~/Downloads/test1.pem).
+
+2.2. ❌ Ansible Cannot Connect - "Connection Timeout" or "Permission Denied"
+Common Causes:
+
+Incorrect Inventory File
+
+Incorrect example:
+
+ini
+Copy
+Edit
+[servers]
+serverA ansible_host=<ServerA_Public_IP> ansible_user=ubuntu
+serverB ansible_host=<ServerB_Private_IP> ansible_user=ubuntu
+Correct example:
+
+ini
+Copy
+Edit
+[servers]
+serverA ansible_host=<ServerA_Public_IP> ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/test1.pem
+serverB ansible_host=<ServerB_Private_IP> ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/test1.pem
+Incorrect SSH Key Permissions
+
+Fix permissions:
+
+bash
+Copy
+Edit
+chmod 400 /home/ubuntu/test1.pem
+Network / Firewall Issues
+
+✅ Ensure AWS Security Group allows inbound traffic on port 22 (SSH).
+
+How to check:
+
+Go to AWS Console → EC2 → Security Groups.
+
+Confirm port 22 is open.
+
+Resolution Steps:
+
+Verify inventory file correctness.
+
+Confirm private key permissions (chmod 400).
+
+Validate AWS security group settings.
+
+Test SSH manually:
+
+bash
+Copy
+Edit
+ssh -i /home/ubuntu/test1.pem ubuntu@<ServerB_Private_IP>
+2.3. 🧹 Additional Troubleshooting Tips
+Test manual SSH connection first before running Ansible.
+
+Ping between servers to verify network routes.
+
+Check firewalls for any hidden blocks.
+
+3. 🎯 Conclusion
+By following the steps above, you will:
+
+✅ Properly configure your Ansible inventory file
+✅ Ensure your SSH keys are correctly placed and secured
+✅ Troubleshoot and fix common scp and Ansible connection errors
+✅ Solve network/firewall issues if any occur
+
