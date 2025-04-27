@@ -1,0 +1,106 @@
+
+📄 WSL: How to Access Windows Local Files from Ubuntu
+
+✨ Introduction
+When using WSL (Windows Subsystem for Linux), your Windows drives (C:, D:, etc.) are automatically mounted inside Linux at /mnt/ folder.
+You can easily access and use your local Windows files in Ubuntu.
+
+🛠️ Step-by-Step Guide
+1. Find your Windows username
+In your WSL terminal (Ubuntu), run:
+
+bash
+Copy
+Edit
+cmd.exe /c "echo %USERNAME%"
+This command will output your Windows username.
+Example:
+
+nginx
+Copy
+Edit
+ankita
+2. Access Windows Drives
+Windows drives are mounted under /mnt/.
+Examples:
+
+
+Windows Path	Ubuntu Path
+C:\	/mnt/c/
+D:\	/mnt/d/
+3. Access Specific Folders
+Example: Access Downloads folder:
+
+bash
+Copy
+Edit
+cd /mnt/c/Users/<YourWindowsUsername>/Downloads
+✅ Replace <YourWindowsUsername> with your actual username (like ankita).
+
+Example:
+
+bash
+Copy
+Edit
+cd /mnt/c/Users/ankita/Downloads
+Now you can list your files:
+
+bash
+Copy
+Edit
+ls
+4. Use Files in Commands
+You can now use files (like .pem, .txt, .zip) directly in Linux commands.
+
+Example:
+If you want to use a PEM file stored in Downloads:
+
+bash
+Copy
+Edit
+ssh -i /mnt/c/Users/ankita/Downloads/test1.pem ubuntu@your-aws-public-ip
+or for Ansible:
+
+bash
+Copy
+Edit
+ansible-playbook -i inventory.ini playbook.yml --private-key=/mnt/c/Users/ankita/Downloads/test1.pem
+⚡ Troubleshooting
+
+Issue	Solution
+No such file or directory error when accessing Downloads	Make sure you are using correct path like /mnt/c/Users/ankita/Downloads/
+Permission denied for PEM file	Run chmod 400 /mnt/c/Users/ankita/Downloads/test1.pem inside WSL to make it secure
+Files not visible	Check if they exist correctly in your Windows Downloads folder
+🛡️ Important Notes
+Linux is case-sensitive — Downloads is not the same as downloads.
+
+Always check correct paths /mnt/c/Users/...
+
+Avoid spaces in folder names. If needed, use quotes "path with space" or \ before spaces.
+
+🎯 Final Example
+Full command to SSH into AWS server using a .pem file from Windows Downloads:
+
+bash
+Copy
+Edit
+ssh -i /mnt/c/Users/ankita/Downloads/test1.pem ubuntu@35.174.166.136
+🌟 Bonus Tip: Create a Shortcut (Optional)
+To make it faster, you can create a shortcut in Ubuntu:
+
+bash
+Copy
+Edit
+ln -s /mnt/c/Users/ankita/Downloads ~/downloads
+Now every time you can just:
+
+bash
+Copy
+Edit
+cd ~/downloads
+🚀 and you're inside your Downloads easily!
+
+✅ Conclusion
+By mounting /mnt/c, WSL allows you to easily use all your Windows files inside Linux.
+No need to copy/paste manually — everything is linked automatically.
+
